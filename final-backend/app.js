@@ -9,11 +9,15 @@ import notFound from './middleware/notFound.js';
 config();
 
 const app = express();
-const mongodbUrl = process.env.MONGODB_URL;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+const mongodbUrl = process.env.NODE_ENV == 'development' ? process.env.MONGODB_URL_LOCAL : process.env.MONGODB_URL;
 await mongoose.connect(mongodbUrl);
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+
 
 
 app.use('/users', userRoute);

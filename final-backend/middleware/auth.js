@@ -7,11 +7,11 @@ config();
 const jwtSecretKey = process.env.JWT_SEKRET_KEY;
 
 export function generateAccessToken(data) {
-    const token = jwt.sign(data, jwtSecretKey, { expiresIn: '24h' });
+    const token = jwt.sign(data, jwtSecretKey, { expiresIn: '90d' });
     return token;
 }
 
-export function authenticateToken(req, res, next) {
+export function authenticateUserToken(req, res, next) {
     const authHeader = req.heaeders['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -30,3 +30,5 @@ export function authenticateToken(req, res, next) {
     });
 }
 
+
+// TODO check if user exists

@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
-import crypto from 'crypto';
+// import crypto from 'crypto';
+import bcrypt from 'bcrypt';
 import { config } from 'dotenv';
 config();
 
-const cryptoSalt = process.env.CRYPTO_SALT
+const cryptoSalt = Number(process.env.CRYPTO_SALT);
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -31,6 +32,7 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+        select: false
     },
     profilePicture: String,
     role: {
@@ -39,11 +41,17 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
-UserSchema.pre('save', next => {
-    this.password = crypto
-        .pbkdf2Sync(this.password, cryptoSalt, 10000, 64, 'sha512')
-        .toString('base64');
+UserSchema.methods.correctPassword = async function(candidatePassword, userPassword) {
+    return await bcrypt.compare(candidatePassword, userPassword);
+}
 
+UserSchema.pre('save', async function(next) {
+    if (!this.isModified('password')) return next();
+    
+    this.password = await bcrypt.hash(this.password, cryptoSalt);
+    // this.password = crypto
+    //     .pbkdf2Sync(this.password, cryptoSalt, 10000, 64, 'sha512')
+    //     .toString('base64');
     next();
 });
 
