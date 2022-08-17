@@ -1,0 +1,21 @@
+.custom__header__top {
+  background-color: red;
+}
+.custom__header__top__link {
+  color: white;
+  margin-right: 20px;
+}
+.custom__header__links {
+  justify-content: flex-end;
+  display: flex;
+  height: 68px;
+  align-items: center;
+}
+.custom__header__top__p {
+  color: white;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}

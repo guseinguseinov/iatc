@@ -1,0 +1,7 @@
+.custom__header__bottom {
+  margin-top: 20px;
+  display: flex;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+}
