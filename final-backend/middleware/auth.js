@@ -12,9 +12,10 @@ export function generateAccessToken(data) {
 }
 
 export function authenticateUserToken(req, res, next) {
+    console.log(req.heaeders);
     const authHeader = req.heaeders['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-
+    console.log(authHeader, token);
     if (!token) return res.status(401), json(generateResponseMessage(401, 'Unauthorized request!', null));
 
     jwt.verify(token, jwtSecretKey, (err, decoded) => {

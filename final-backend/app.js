@@ -8,16 +8,12 @@ import errorMiddleware from './middleware/errorMiddleware.js';
 import notFound from './middleware/notFound.js';
 config();
 
-const app = express();
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-
 const mongodbUrl = process.env.NODE_ENV == 'development' ? process.env.MONGODB_URL_LOCAL : process.env.MONGODB_URL;
 await mongoose.connect(mongodbUrl);
 
-
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 
 app.use('/users', userRoute);
