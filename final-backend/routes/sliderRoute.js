@@ -8,10 +8,10 @@ const sliderRoute = express.Router();
 
 const imageUpload = upload.single('image');
 
-sliderRoute.get('/', catchError( slidersCtrl.getAllSliders ));
-sliderRoute.get('/:id', catchError( slidersCtrl.getSingleSlider ));
-sliderRoute.post('/create', imageUpload, catchError( slidersCtrl.createSlider ));
-sliderRoute.patch('/update/:id', imageUpload, catchError( slidersCtrl.updateSlider ));
-sliderRoute.delete('/delete/:id', catchError( slidersCtrl.deleteSlider ));
+sliderRoute.get('/', catchError(slidersCtrl.getAllSliders));
+sliderRoute.get('/:id', catchError(slidersCtrl.getSingleSlider));
+sliderRoute.post('/create', imageUpload, catchError(slidersCtrl.createSlider));
+sliderRoute.patch('/update/:id', imageUpload, catchError(slidersCtrl.updateSlider));
+sliderRoute.delete('/delete/:id', catchError(slidersCtrl.deleteSlider));
 
 export default sliderRoute;

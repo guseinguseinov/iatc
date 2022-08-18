@@ -17,4 +17,4 @@ userRoute.get('/:id', catchError(userCtrl.getUser));
 userRoute.patch('/update/:id', authenticateUserToken, catchError(userCtrl.changeUserInfo));
 
 
-export default userRoute;   
+export default userRoute;  
