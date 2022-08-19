@@ -11,7 +11,7 @@ function fileFilter(req, file, cb) {
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads');
+        cb(null, 'public/uploads/users');
     },
     filename: function (req, file, cb) {
         const fileNameParts = file.originalname.split('.');
@@ -21,6 +21,6 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage, fileFilter });
+const userUpload = multer({ storage: storage, fileFilter: fileFilter });
 
-export default upload;
+export default userUpload;
