@@ -11,9 +11,10 @@ export function generateAccessToken(data) {
     return token;
 }
 
-export function authenticateUserToken(req, res, next) {
-    console.log(req.heaeders);
-    const authHeader = req.heaeders['authorization'];
+export const authenticateUserToken = (req, res, next) => {
+    // TODO : WRITE AUTH WITH COOKIES 
+    console.log(req.rawHeaders);
+    const authHeader = req.rawHeaders;
     const token = authHeader && authHeader.split(' ')[1];
     console.log(authHeader, token);
     if (!token) return res.status(401), json(generateResponseMessage(401, 'Unauthorized request!', null));
@@ -30,6 +31,3 @@ export function authenticateUserToken(req, res, next) {
         }
     });
 }
-
-
-// TODO check if user exists

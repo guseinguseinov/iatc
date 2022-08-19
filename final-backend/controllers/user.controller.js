@@ -1,8 +1,8 @@
+import fs from 'fs';
+
 import { generateAccessToken } from "../middleware/auth.js";
 import UserModel from "../models/User.js";
 import generateResponseMessage from "../utils/resGenerate.js";
-
-// TODO 3 : DEBUG THIS
 
 const userCtrl = {
     async getAllUsers(req, res) {
@@ -20,14 +20,11 @@ const userCtrl = {
         }
         res.status(200).json(generateResponseMessage(200, null, user));
     },
-    async register(req, res) {
-
-        var { path } = req.file;
-        const { password, firstName, lastName, phone, email } = req.body;
-
-        if (!password || !firstName || !lastName || !phone || !email) {
-            return res.status(400).json(generateResponseMessage(400, 'Please provide required inputs', null));
+    async register(req, res, next) {
+        if (req.file) {
+            var { path } = req.file;
         }
+        const { password, firstName, lastName, phone, email } = req.body;
 
         const newUser = await UserModel({
             firstName,
@@ -44,7 +41,6 @@ const userCtrl = {
         res.status(201).json(generateResponseMessage(201, 'New User created', token));
     },
     async login(req, res) {
-        console.log(req.body)
         const { email, password } = req.body;
 
         if (!email || !password) {
@@ -67,13 +63,42 @@ const userCtrl = {
         res.status(200).json(generateResponseMessage(200, null, token));
     },
     async changeUserInfo(req, res) {
+        const { email, phone } = req.body;
 
+        if (email) {
+            const user = await UserModel.findOne({ email });
+            if (user) return res.status(409).json(generateResponseMessage(409, 'User email already exists', null));
+        }
+
+        if (phone) {
+            const user = await UserModel.findOne({ phone });
+            if (user) return res.status(409).json(generateResponseMessage(409, 'User phone already exists', null));
+        }
+
+        if (req.file) {
+            const user = await UserModel.findById(req.params.id);
+            fs.unlinkSync(user.profilePicture);
+            await UserModel.findByIdAndUpdate(req.params.id, {
+                profilePicture: req.file.path,
+                ...req.body,
+            });
+        }
+        else {
+            await UserModel.findByIdAndUpdate(req.params.id, req.body);
+        }
+
+        res.status(200).json(generateResponseMessage(200, 'User info updated', null));
+    },
+    async deleteUser(req, res) {
+        const user = await UserModel.findById(req.params.id);
+        fs.unlinkSync(user.profilePicture);
 
     }
 }
 
 // TODO 1 : finish change user data
 // TODO 2 : finish delete user data
-
+// TODO 3 : FINISH AUTH WITH COOKIE
+// TODO 4 : DEBUG IMAGE UPLOAD FOR NOT SAVING IF USER EXISTS
 
 export default userCtrl;

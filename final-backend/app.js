@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import { config } from 'dotenv';
+import cors from 'cors';
 
 import sliderRoute from './routes/sliderRoute.js';
 import userRoute from './routes/userRoute.js';
@@ -14,6 +15,7 @@ await mongoose.connect(mongodbUrl);
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 
 app.use('/users', userRoute);
