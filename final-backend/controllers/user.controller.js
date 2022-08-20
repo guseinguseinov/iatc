@@ -38,6 +38,11 @@ const userCtrl = {
         await newUser.save();
 
         const token = generateAccessToken({ id: newUser._id });
+        res.cookie('accessToken', token, {
+            maxAge: 60 * 60 * 12 * 1000,
+            httpOnly: true,
+        });
+
         res.status(201).json(generateResponseMessage(201, 'New User created', token));
     },
     async login(req, res) {
@@ -60,6 +65,12 @@ const userCtrl = {
         }
 
         const token = generateAccessToken({ id: user._id });
+
+        res.cookie('accessToken', token, {
+            maxAge: 60 * 60 * 12 * 1000,
+            httpOnly: true,
+        });
+
         res.status(200).json(generateResponseMessage(200, null, token));
     },
     async changeUserInfo(req, res) {
@@ -90,15 +101,15 @@ const userCtrl = {
         res.status(200).json(generateResponseMessage(200, 'User info updated', null));
     },
     async deleteUser(req, res) {
-        const user = await UserModel.findById(req.params.id);
-        fs.unlinkSync(user.profilePicture);
+        const user = await UserModel.findByIdAndDelete(req.params.id);
+        if (!user) return res.status(404).json(generateResponseMessage(404, 'User no longer exists', null));
 
+        fs.unlinkSync(user.profilePicture);
+        // await UserModel.findByIdAndDelete(req.params.id);
+        res.status(404).json(generateResponseMessage(404, 'User deleted successfully', null)); // when status code is 204 res message not displayed
     }
 }
 
-// TODO 1 : finish change user data
-// TODO 2 : finish delete user data
-// TODO 3 : FINISH AUTH WITH COOKIE
-// TODO 4 : DEBUG IMAGE UPLOAD FOR NOT SAVING IF USER EXISTS
+// TODO  : DEBUG IMAGE UPLOAD FOR NOT SAVING IF USER EXISTS
 
 export default userCtrl;
