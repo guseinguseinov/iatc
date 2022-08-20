@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { config } from 'dotenv';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
 import sliderRoute from './routes/sliderRoute.js';
 import userRoute from './routes/userRoute.js';
@@ -16,6 +17,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(cookieParser());
 
 
 app.use('/users', userRoute);
