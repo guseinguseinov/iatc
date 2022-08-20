@@ -1,4 +1,5 @@
 import fs from 'fs';
+import crypto from 'crypto';
 
 import { generateAccessToken } from "../middleware/auth.js";
 import UserModel from "../models/User.js";
