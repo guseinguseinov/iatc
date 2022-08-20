@@ -32,3 +32,25 @@ export const authenticateUserToken = async (req, res, next) => {
         }
     });
 }
+
+export const authenticateAdminToken = async (req, res, next) => {
+    const { accessToken } = req.cookies;
+
+    if (!accessToken) return res.status(401), json(generateResponseMessage(401, 'Unauthorized request!', null));
+
+    jwt.verify(accessToken, jwtSecretKey, (err, decoded) => {
+        if (err) return res.status(403).json(generateResponseMessage(401, 'Unauthorized request!', null));
+
+        const { exp, iat, id, role } = decoded;
+
+        if (role !== "admin") return res.status(403).json(generateResponseMessage(401, 'Unauthorized request!', null));
+
+        if (exp < Date.now() / 1000) {
+            return res.status(401).json(generateResponseMessage(401, 'Your session has expired', null));
+        }
+        else {
+            req.user = id;
+            next();
+        }
+    });
+}
