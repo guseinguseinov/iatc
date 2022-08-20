@@ -10,6 +10,6 @@ const adminRoute = express.Router();
 adminRoute.post('/register', catchError(adminCtrl.register));
 adminRoute.post('/login', catchError(adminCtrl.login));
 adminRoute.patch('/update/:id', authenticateAdminToken, adminCtrl.changeAdminInfo);
-
+adminRoute.delete('/delete/:id', catchError(adminCtrl.deleteAdmin));
 
 export default adminRoute;

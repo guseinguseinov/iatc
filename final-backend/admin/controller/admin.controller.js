@@ -56,7 +56,12 @@ const adminCtrl = {
 
         await AdminModel.findByIdAndUpdate(req.params.id, req.body);
         res.status(200).json(generateResponseMessage(200, 'Admin info updated', null));
+    },
+    async deleteAdmin(req, res) {
+        const admin = await AdminModel.findByIdAndDelete(req.params.id);
 
+        if (!admin) return res.status(404).json(generateResponseMessage(404, 'Admin no longer exists', null));
+        res.status(404).json(generateResponseMessage(404, 'Admin deleted successfully', null)); // when status code is 204 res message not displayed
     }
 }
 

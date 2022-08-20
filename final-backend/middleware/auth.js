@@ -14,7 +14,7 @@ export function generateAccessToken(data) {
 
 export const authenticateUserToken = async (req, res, next) => {
     const { accessToken } = req.cookies;
-    if (!accessToken) return res.status(401), json(generateResponseMessage(401, 'Unauthorized request!', null));
+    if (!accessToken) return res.status(401).json(generateResponseMessage(401, 'Unauthorized request!', null));
 
     jwt.verify(accessToken, jwtSecretKey, (err, decoded) => {
         if (err) return res.status(403).json(generateResponseMessage(401, 'Unauthorized request!', null));
@@ -36,7 +36,7 @@ export const authenticateUserToken = async (req, res, next) => {
 export const authenticateAdminToken = async (req, res, next) => {
     const { accessToken } = req.cookies;
 
-    if (!accessToken) return res.status(401), json(generateResponseMessage(401, 'Unauthorized request!', null));
+    if (!accessToken) return res.status(401).json(generateResponseMessage(401, 'Unauthorized request!', null));
 
     jwt.verify(accessToken, jwtSecretKey, (err, decoded) => {
         if (err) return res.status(403).json(generateResponseMessage(401, 'Unauthorized request!', null));
