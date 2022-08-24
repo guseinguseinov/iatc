@@ -15,6 +15,7 @@ userRoute.get('/', catchError(userCtrl.getAllUsers));
 userRoute.get('/:id', catchError(userCtrl.getUser));
 userRoute.patch('/update/:id', authenticateUserToken, imageUpload, catchError(userCtrl.changeUserInfo));
 userRoute.delete('/delete/:id', authenticateUserToken, catchError(userCtrl.deleteUser));
-userRoute.post('/password/request/:id', authenticateUserToken, catchError(userCtrl.requestPasswordReset));
+userRoute.post('/password/reset/', catchError(userCtrl.requestPasswordReset));
+userRoute.patch('/password', catchError(userCtrl.resetPassword));
 
 export default userRoute;  
