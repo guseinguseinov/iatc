@@ -1,9 +1,16 @@
 import fs from 'fs';
 import crypto from 'crypto';
+import bcrypt from 'bcrypt'
+import { config } from 'dotenv';
+config();
 
 import { generateAccessToken } from "../middleware/auth.js";
 import UserModel from "../models/User.js";
+import PasswordResetModel from '../models/passwordReset.js';
 import generateResponseMessage from "../utils/resGenerate.js";
+import transport from '../utils/emailSender.js';
+
+const cryptoSalt = Number(process.env.CRYPTO_SALT);
 
 const userCtrl = {
     async getAllUsers(req, res) {
@@ -108,6 +115,62 @@ const userCtrl = {
         fs.unlinkSync(user.profilePicture);
         // await UserModel.findByIdAndDelete(req.params.id);
         res.status(404).json(generateResponseMessage(404, 'User deleted successfully', null)); // when status code is 204 res message not displayed
+    },
+    async requestPasswordReset(req, res) {
+        const { email } = req.body;
+        const user = await UserModel.findOne({ email });
+        if (!user) return res.status(404).json(generateResponseMessage(404, 'User no longer exists', null));
+
+        const token = crypto.randomBytes(32).toString('base64url');
+
+        const passwordReset = await PasswordResetModel({
+            user: user._id,
+            resetToken: token,
+        });
+
+        await passwordReset.save();
+
+        const linkToResetPasswordPage = 'http://localhost:8080/users/password/' + token;
+
+        let mail = await transport.sendMail({
+            from: 'iTicket api <noreply@iticket.info>',
+            to: email,
+            subject: "Password Reset",
+            text:
+                `oh, look like you forgot your password.
+                To get reset password use link below
+                ${linkToResetPasswordPage}
+                `,
+            html:
+                `
+            <h1>Password Reset</h1>
+            <p> 
+                oh, look like you forgot your password.
+                To get reset password use link below
+            </p>                  
+            <a href=${linkToResetPasswordPage} target="_blank">Reset Password</a>
+            `
+        })
+
+        res.status(200).json(generateResponseMessage(200, 'Email sent to your address to reset password', null));
+
+    },
+    async resetPassword(req, res) {
+        const { newPassword, resetToken } = req.body;
+
+        const passwordReset = await PasswordResetModel.findOne({ resetToken, expired: false });
+        if (passwordReset) {
+            const userId = passwordReset.user;
+            await PasswordResetModel.findByIdAndUpdate(passwordReset._id, { expired: true });
+
+            const hashedPassowrd = await bcrypt.hash(newPassword, cryptoSalt);
+            await UserModel.findByIdAndUpdate(userId, { password: hashedPassowrd });
+
+            res.status(200).json(generateResponseMessage(200, 'Your password has been reset.', null));
+
+        } else {
+            res.status(404).json(generateResponseMessage(404, 'This password reset rewuest does not exist or expired', null));
+        }
     }
 }
 
