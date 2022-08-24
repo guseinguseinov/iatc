@@ -42,16 +42,11 @@ const adminCtrl = {
         res.status(200).json(generateResponseMessage(200, null, token));
     },
     async changeAdminInfo(req, res) {
-        const { email, phone } = req.body;
+        const { email } = req.body;
 
         if (email) {
             const admin = await AdminModel.findOne({ email });
             if (admin) return res.status(409).json(generateResponseMessage(409, 'Admin email already exists', null));
-        }
-
-        if (phone) {
-            const admin = await AdminModel.findOne({ phone });
-            if (admin) return res.status(409).json(generateResponseMessage(409, 'admin phone already exists', null));
         }
 
         await AdminModel.findByIdAndUpdate(req.params.id, req.body);
