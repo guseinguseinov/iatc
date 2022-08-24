@@ -25,6 +25,7 @@ app.use(cookieParser());
 
 app.use('/users', userRoute);
 app.use('/admin', adminRoute);
+app.use('/sliders', sliderRoute);
 app.all('*', notFound);
 
 app.use(errorMiddleware);

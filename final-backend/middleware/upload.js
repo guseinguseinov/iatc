@@ -21,6 +21,20 @@ const userStorage = multer.diskStorage({
     }
 });
 
+const sliderStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads/sliders');
+    },
+    filename: function (req, file, cb) {
+        const fileNameParts = file.originalname.split('.');
+        const ext = fileNameParts[fileNameParts.length - 1];
+        const suffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, suffix + '.' + ext);
+    }
+})
+
+export const sliderUpload = multer({ storage: sliderStorage, fileFilter });
+
 const userUpload = multer({ storage: userStorage, fileFilter: fileFilter });
 
 export default userUpload;
