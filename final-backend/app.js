@@ -4,12 +4,13 @@ import { config } from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
+config();
 import sliderRoute from './routes/sliderRoute.js';
 import userRoute from './routes/userRoute.js';
 import errorMiddleware from './middleware/errorMiddleware.js';
 import notFound from './middleware/notFound.js';
 import adminRoute from './admin/routes/admin.route.js';
-config();
+
 
 const mongodbUrl = process.env.NODE_ENV == 'development' ? process.env.MONGODB_URL_LOCAL : process.env.MONGODB_URL;
 await mongoose.connect(mongodbUrl);
