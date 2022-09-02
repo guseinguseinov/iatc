@@ -7,9 +7,11 @@ config();
 const cryptoSalt = Number(process.env.CRYPTO_SALT);
 
 const checkUniquePhone = async value => {
-    if (!value) return false;
-    const user = await UserModel.findOne({ phone: value });
-    if (user) return false;
+    if (value) {
+        const user = await UserModel.findOne({ phone: value });
+        if (user) return false;
+    }
+
     return true;
 }
 
@@ -37,7 +39,6 @@ const UserSchema = new mongoose.Schema({
             validator: checkUniquePhone,
             message: props => `This phone number : ${props.value} exists`,
         },
-        required: [true, 'User phone number required'],
         unique: true,
         trim: true,
     },
@@ -60,7 +61,15 @@ const UserSchema = new mongoose.Schema({
     role: {
         type: String,
         default: 'user',
-    }
+    },
+    // wishlist: [{
+    //     type: 'ObjectId',
+    //     ref: 'whislists',
+    // }],
+    // cart: [{
+    //     cart: 'ObjectId',
+    //     ref: 'carts',
+    // }]
 });
 
 UserSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
