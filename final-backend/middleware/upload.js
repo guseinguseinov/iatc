@@ -39,6 +39,20 @@ const sliderStorage = multer.diskStorage({
 export const sliderUpload = multer({ storage: sliderStorage, fileFilter });
 
 
+const eventStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads/events');
+    },
+    filename: function (req, file, cb) {
+        const fileNameParts = file.originalname.split('.');
+        const ext = fileNameParts[fileNameParts.length - 1];
+        const suffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, suffix + '.' + ext);
+    }
+});
+
+export const eventUpload = multer({ storage: eventStorage, fileFilter });
+
 const newsStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'public/uploads/news');
