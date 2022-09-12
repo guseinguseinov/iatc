@@ -1,11 +1,19 @@
 import SliderModel from "../../models/Slider.js";
 import generateResponseMessage from "../../utils/resGenerate.js";
 import fs from 'fs';
+import path from 'path';
+
 
 const deleteSlidersImage = async sliderId => {
     const slider = await SliderModel.findById(sliderId);
     const { image } = slider;
-    fs.unlinkSync(image);
+    const filePath = path.resolve(image);
+    try {
+        fs.unlinkSync(filePath);
+    }
+    catch (err) {
+        console.log("didnt find the path");
+    }
 }
 
 const slidersCtrl = {

@@ -21,8 +21,8 @@ const userCtrl = {
         res.status(200).json(generateResponseMessage(200, null, users));
     },
     async getUser(req, res) {
-        const { id } = req.params;
-        const user = await UserModel.findById(id);
+        const { userId } = req.params;
+        const user = await UserModel.findById(userId);
         if (!user) {
             return res.status(400).json(generateResponseMessage(400, "User not found", null))
         }
@@ -95,21 +95,21 @@ const userCtrl = {
         }
 
         if (req.file) {
-            const user = await UserModel.findById(req.params.id);
+            const user = await UserModel.findById(req.params.userId);
             fs.unlinkSync(user.profilePicture);
-            await UserModel.findByIdAndUpdate(req.params.id, {
+            await UserModel.findByIdAndUpdate(req.params.userId, {
                 profilePicture: req.file.path,
                 ...req.body,
             });
         }
         else {
-            await UserModel.findByIdAndUpdate(req.params.id, req.body);
+            await UserModel.findByIdAndUpdate(req.params.userId, req.body);
         }
 
         res.status(200).json(generateResponseMessage(200, 'User info updated', null));
     },
     async deleteUser(req, res) {
-        const user = await UserModel.findByIdAndDelete(req.params.id);
+        const user = await UserModel.findByIdAndDelete(req.params.userId);
         if (!user) return res.status(404).json(generateResponseMessage(404, 'User no longer exists', null));
 
         fs.unlinkSync(user.profilePicture);

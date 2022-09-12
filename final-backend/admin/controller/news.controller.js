@@ -21,15 +21,29 @@ const NewsCtrl = {
         res.status(201).json(generateResponseMessage(201, 'News added', news));
     },
     async getNews(req, res) {
-        const news = await NewsModel.find({});
-
+        const news = await NewsModel
+            .find({})
+            .populate({
+                path: "comments",
+                populate: {
+                    path: "user"
+                }
+            })
+            .exec();
         if (!news) return res.status(404).json(generateResponseMessage(404, 'No news found', null));
 
         res.status(200).json(generateResponseMessage(200, null, news));
     },
     async getSingleNews(req, res) {
-        const news = await NewsModel.findById(req.params.id);
-
+        const news = await NewsModel
+            .findById(req.params.id)
+            .populate({
+                path: "comments",
+                populate: {
+                    path: "user"
+                }
+            })
+            .exec();
         if (!news) return res.status(404).json(generateResponseMessage(404, 'No news found', null));
         res.status(200).json(generateResponseMessage(200, null, news));
     },

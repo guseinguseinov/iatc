@@ -21,7 +21,7 @@ export const authenticateUserToken = async (req, res, next) => {
 
         const { exp, iat, id } = decoded;
 
-        if (id != req.params.id) return res.status(403).json(generateResponseMessage(401, 'You can not change or delete other users', null));
+        if (id != (req.params.userId || req.query.userId || req.user)) return res.status(403).json(generateResponseMessage(403, 'You can not change or delete other users', null));
 
 
         if (exp < Date.now() / 1000) {

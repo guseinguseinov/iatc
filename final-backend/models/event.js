@@ -1,11 +1,5 @@
 import mongoose from "mongoose";
 
-const checkEndTime = async today => {
-    today = new Date();
-    today.setDate(today.getDate() + 30);
-    console.log(today.toISOString().replace(/T/, ' ').replace(/\..+/, '').slice(0, 19));
-}
-
 const EventSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -17,30 +11,18 @@ const EventSchema = new mongoose.Schema({
     },
     location: {
         type: String,
-        required: [true, 'Location required'],
+        required: [true, 'Location is required'],
     },
     startTime: {
         type: Date,
         default: Date.now(),//yyyy-mm-dd
-        required: [true, 'Start time required'],
     },
     endTime: {
         type: Date,
-        required: [true, 'End time required'],
-        validate: {
-            validator: checkEndTime,
-            message: props => `Last time is ${props.value}`
-        }
+        default: new Date(+new Date() + 30 * 24 * 60 * 60 * 1000)
     },
-    description: {
-        type: String,
-        required: [true, 'Description required'],
-    },
-    image: {
-        type: String,
-        required: [true, 'Event image required'],
-        //upload
-    },
+    description: String,
+    eventImage: String,
     address: {
         country: {
             type: String,
@@ -51,16 +33,11 @@ const EventSchema = new mongoose.Schema({
             required: [true, 'City required'],
         },
     },
-    website: {
-        type: String,
-        required: [true, 'Website required'],
-    },
-    comment: {
+    website: String,
+    comments: [{
         type: mongoose.SchemaTypes.ObjectId,
-        ref: "users",
-        required: [true, 'Comment required'],
-         
-    }
+        ref: "eventcomments",
+    }]
 }, { timestamps: true, })
 
 

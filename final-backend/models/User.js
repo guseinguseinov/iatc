@@ -66,10 +66,10 @@ const UserSchema = new mongoose.Schema({
     //     type: 'ObjectId',
     //     ref: 'whislists',
     // }],
-    // cart: [{
-    //     cart: 'ObjectId',
+    // cart: {
+    //     type: 'ObjectId',
     //     ref: 'carts',
-    // }]
+    // }
 });
 
 UserSchema.methods.correctPassword = async function (candidatePassword, userPassword) {

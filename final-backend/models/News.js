@@ -8,6 +8,7 @@ const NewsSchema = new mongoose.Schema({
     description: String,
     newsImage: String,
     url: String,
+    comments: [{ type: "ObjectId", ref: "newscomments" }]
 }, {
     timestamps: true,
 });

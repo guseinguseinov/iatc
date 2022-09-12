@@ -1,8 +1,8 @@
 import express from 'express';
-import slidersCtrl from '../admin/controller/slider.controller.js';
-import { authenticateAdminToken } from '../middleware/auth.js';
-import { sliderUpload } from '../middleware/upload.js';
-import catchError from '../utils/catchError.js';
+import slidersCtrl from '../controller/slider.controller.js';
+import { authenticateAdminToken } from '../../middleware/auth.js';
+import { sliderUpload } from '../../middleware/upload.js';
+import catchError from '../../utils/catchError.js';
 
 const sliderRoute = express.Router();
 
