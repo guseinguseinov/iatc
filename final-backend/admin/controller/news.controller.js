@@ -10,10 +10,10 @@ const NewsCtrl = {
         if (req.file) {
             path = req.file.path;
         }
-
+        let newsImage = 'http://localhost:8080/'+ path;
         const news = await NewsModel({
             ...req.body,
-            newsImage: path,
+            newsImage: newsImage,
         });
 
         await news.save();
