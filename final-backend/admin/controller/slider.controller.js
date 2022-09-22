@@ -37,11 +37,11 @@ const slidersCtrl = {
         if (req.file) {
             var { path } = req.file;
         }
-
+         let sliderImage= 'http://localhost:8080/'+ path;
         const newSlider = await SliderModel({
             title,
             description,
-            image: path,
+            image: sliderImage,
             url,
         });
 

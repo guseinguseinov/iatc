@@ -33,6 +33,11 @@ const EventSchema = new mongoose.Schema({
             required: [true, 'City required'],
         },
     },
+    category: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref:"categories",
+        required:true,
+    },
     website: String,
     comments: [{
         type: mongoose.SchemaTypes.ObjectId,
