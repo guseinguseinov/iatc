@@ -23,7 +23,7 @@ const adminCtrl = {
         }
 
         const admin = await AdminModel.findOne({ email }).select('+password');
-
+        console.log(admin);
         if (!admin) {
             return res.status(401).json(generateResponseMessage(401, 'Incorrect email or password', null));
         }

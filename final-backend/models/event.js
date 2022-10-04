@@ -1,5 +1,14 @@
 import mongoose from "mongoose";
 
+const check=(category)=>{
+    if(category==="upcoming events"||category==="future events"){
+        return category;
+    }
+    else{
+        return 'Insert right event'
+    }
+}
+
 const EventSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -34,8 +43,9 @@ const EventSchema = new mongoose.Schema({
         },
     },
     category: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref:"categories",
+        type: String,
+        enum:["upcoming events","future events"],
+        validation: check,
         required:true,
     },
     website: String,
