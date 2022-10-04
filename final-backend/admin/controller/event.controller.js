@@ -3,6 +3,12 @@ import CategoryModel from "../../models/category.js";
 import generateResponseMessage from "../../utils/resGenerate.js";
 import fs from "fs";
 import path from 'path';
+import emailSender from '../../utils/emailSender.js'
+import nodemailer from 'nodemailer';
+import UserModel from '../../models/User.js';
+import transport from "../../utils/emailSender.js";
+import userCtrl from "../../controllers/user.controller.js"
+import SubscriberModel from "../../models/Subscriber.js";
 
 const deleteEventImage = async eventId => {
     const event = await EventModel.findById(eventId);
@@ -19,12 +25,23 @@ const deleteEventImage = async eventId => {
 
 const eventCtrl = {
     async getAllEvents(req, res) {
-        let filter={};
-        
-        if(req.query.categories){
-            filter={category:req.query.categories.split(',')};
-        }
-        const events = await EventModel.find(filter).populate('category').exec();
+        // let filter = {};
+        // if (req.query.categories) {
+        //     filter = { category: req.query.categories.split(',') };
+        // }
+        // const events = await EventModel.find(filter).populate('category').exec();
+        const events = await EventModel.find();
+            const filters = req.query;
+            const filteredEvents = events.filter(event => {
+              let isValid = true;
+              for (let key in filters) {
+                console.log(key, event[key], filters[key]);
+                isValid = isValid && event[key] == filters[key];
+              }
+              return isValid;
+            });
+            res.send(filteredEvents);
+            
         if (events.length == 0) {
             return res.status(404).json(generateResponseMessage(404, 'There is no event', null));
         }
@@ -38,17 +55,49 @@ const eventCtrl = {
         res.status(200).json(generateResponseMessage(200, null, event));
     },
     async createEvent(req, res) {
-        const { title, price, location, startTime, endTime, description, address, category,website, comment } = req.body;
+        const { title, price, location, startTime, endTime, description, address, category, website, comment } = req.body;
         if (req.file) {
             var { path } = req.file;
         }
 
-        let eventImage = 'http://localhost:8080/'+ path;
+        let eventImage = 'http://localhost:8080/' + path;
         const newEvent = new EventModel({
             eventImage: eventImage,
             ...req.body
         });
         await newEvent.save();
+
+      /*  const users = await UserModel.find({email});
+        console.log(users)
+        const newSubscriber = new SubscriberModel({userEmail: users._email})
+newSubscriber.save()
+        const eventsLink = 'http://localhost:8080/admin/events/'+newEvent._id;
+        // const { email } = userCtrl.getAllUsers();
+        // const userEmail = await UserModel.findOne({ email })
+        // if (!userEmail) return res.status(404).json(generateResponseMessage(404, 'User no longer exists', null));
+        let usersEmail=[];
+        for(let  i in users){
+                usersEmail.push(i);
+        }
+        let sendEventMail = await transport.sendMail({
+            from: 'iTicket Api <noreply@iticket.info',
+            to: usersEmail,
+            subject: 'Event News!',
+            text: `New Event added. For more information please click the link below:
+            &${eventsLink}
+            `,
+            html: `
+            <h1>Event News!</h1>
+            <p>
+            New Event added. For more information please click the link below:
+            <a href=${eventsLink} target="_blank">Events</a>
+            </p>
+            `
+
+        })
+        res.send({
+            message: 'Email has been sent'
+        })*/
         res.status(201).json(generateResponseMessage(201, 'New event created', null));
     },
     async updateEvent(req, res) {
